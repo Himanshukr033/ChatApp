@@ -3,9 +3,12 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+// import dotenv from 'dotenv';
+
+// dotenv.config();
+
 // import { loginRoute } from "../utils/APIRoutes";
 import {
-    Container,
     Typography,
     TextField,
     Button,
@@ -16,7 +19,7 @@ import {
 
 export default function Login() {
   const navigate = useNavigate();
-  const [values, setValues] = useState({ username: "", password: "" });
+  const [values, setValues] = useState({ email: "", password: "" });
 
 //   useEffect(() => {
 //     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
@@ -37,9 +40,9 @@ export default function Login() {
   };
 
   const validateForm = () => {
-    const { username, password } = values;
-    if (username === "" || password === "") {
-      toast.error("Username and password are required.", toastOptions);
+    const { email, password } = values;
+    if (email === "" || password === "") {
+      toast.error("Email and password are required.", toastOptions);
       return false;
     }
     return true;
@@ -48,20 +51,23 @@ export default function Login() {
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (validateForm()) {
-      const { username, password } = values;
+      const { email, password } = values;
       try {
-        // const { data } = await axios.post(loginRoute, { username, password });
+        console.log("handlesubmit try entered");
+        const { data } = await axios.post('http://localhost:5030/api/user/login', { email, password });
         if (data.status === false) {
-        //   toast.error(data.msg, toastOptions);
+          console.log(data);
+          toast.error(data.message, toastOptions);
         } else {
-        //   localStorage.setItem(
-        //     process.env.REACT_APP_LOCALHOST_KEY,
-        //     JSON.stringify(data.user)
-        //   );
+          // localStorage.setItem(
+          //   // process.env.REACT_APP_LOCALHOST_KEY,
+          //   JSON.stringify(data.user)
+          // );
           navigate("/");
         }
       } catch (error) {
         console.error("Error occurred:", error);
+        toast.error(error.message, toastOptions);
       }
     }
   };
@@ -101,9 +107,10 @@ export default function Login() {
             required
             fullWidth
             id="outlined-required"
-            label="Username"
-            name="username"
-            placeholder="Username"
+            label="email"
+            name="email"
+            type="email"
+            placeholder="Email"
             onChange={(e) => handleChange(e)}
             InputLabelProps={{ shrink: true }}
             InputProps={{
@@ -154,7 +161,7 @@ export default function Login() {
           <Grid container justifyContent="center" sx={{ marginTop: "1rem" }}>
             <Grid item>
               <Typography variant="h6" sx={{ color: "white" }}>
-                Don't have an account?{" "}
+                Don&apos;t have an account?{" "}
                 <MuiLink
                   component={Link}
                   to="/register"
