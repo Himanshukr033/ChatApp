@@ -3,11 +3,7 @@ import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-// import dotenv from 'dotenv';
 
-// dotenv.config();
-
-// import { loginRoute } from "../utils/APIRoutes";
 import {
     Typography,
     TextField,
@@ -21,11 +17,12 @@ export default function Login() {
   const navigate = useNavigate();
   const [values, setValues] = useState({ email: "", password: "" });
 
-//   useEffect(() => {
-//     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-//       navigate("/");
-//     }
-//   }, []);
+  useEffect(() => {
+    
+    if (localStorage.getItem('userInfo')) {
+      navigate("/");
+    }
+  }, []);
 
   const toastOptions = {
     position: "bottom-right",
@@ -55,19 +52,22 @@ export default function Login() {
       try {
         console.log("handlesubmit try entered");
         const { data } = await axios.post('http://localhost:5030/api/user/login', { email, password });
-        if (data.status === false) {
-          console.log(data);
+        console.log(data);
+        if (!data) {
           toast.error(data.message, toastOptions);
-        } else {
-          // localStorage.setItem(
-          //   // process.env.REACT_APP_LOCALHOST_KEY,
-          //   JSON.stringify(data.user)
-          // );
-          navigate("/");
+        } else {setTimeout(() => {
+          
+          localStorage.setItem("userInfo", JSON.stringify(data));
+            
+            navigate("/");
+            
+          
+          
+      }, 1200);
         }
       } catch (error) {
         console.error("Error occurred:", error);
-        toast.error(error.message, toastOptions);
+        toast.error(error.response.data.message, toastOptions);
       }
     }
   };

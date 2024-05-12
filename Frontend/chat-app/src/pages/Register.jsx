@@ -1,20 +1,23 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import LoadingButton from '@mui/lab/LoadingButton';
 import { useNavigate, Link } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 // import { loginRoute } from "../utils/APIRoutes";
 import {
+  CircularProgress ,
     Typography,
     TextField,
-    Button,
     Box,
     Grid,
     Link as MuiLink,
+    Input,
   } from "@mui/material";
 
   export default function Register() {
     const navigate = useNavigate();
+
     const toastOptions = {
       position: "bottom-right",
       autoClose: 8000,
@@ -22,31 +25,38 @@ import {
       draggable: true,
       theme: "dark",
     };
+  
     const [values, setValues] = useState({
-      username: "",
+      name: "",
       email: "",
       password: "",
       confirmPassword: "",
+      pic:"https://icon-library.com/images/anonymous-avatar-icon/anonymous-avatar-icon-25.jpg",
     });
-//   useEffect(() => {
-//     if (localStorage.getItem(process.env.REACT_APP_LOCALHOST_KEY)) {
-//       navigate("/");
-//     }
-//   }, []);
+    const [picLoading, setPicLoading] = useState(false);
+
+  useEffect(() => {
+    
+    if (localStorage.getItem('userInfo')) {
+      navigate("/");
+    }
+  }, []);
 
 const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
   };
 
   const handleValidation = () => {
-    const { password, confirmPassword, username, email } = values;
+    
+    const { password, confirmPassword, name, email } = values;
     if (password !== confirmPassword) {
       toast.error(
         "Password and confirm password should be same.",
         toastOptions
       );
+      
       return false;
-    } else if (username.length < 3) {
+    } else if (name.length < 3) {
       toast.error(
         "Username should be greater than 3 characters.",
         toastOptions
@@ -62,30 +72,95 @@ const handleChange = (event) => {
       toast.error("Email is required.", toastOptions);
       return false;
     }
-
+    
     return true;
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (handleValidation()) {
-    //   const { email, username, password } = values;
-    //   const { data } = await axios.post(registerRoute, {
-    //     username,
-    //     email,
-    //     password,
-    //   });
+      setPicLoading(true);
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { email, name, password,pic } = values;
+      try {
+        console.log("handlesubmit try entered");
+      const { data } = await axios.post("http://localhost:5030/api/user/register", {
+        name,
+        email,
+        password,
+        pic
+      },
+    config);
 
-    //   if (data.status === false) {
-    //     toast.error(data.msg, toastOptions);
-    //   }
-      if (data.status === true) {
-        localStorage.setItem(
-        //   process.env.REACT_APP_LOCALHOST_KEY,
-          JSON.stringify(data.user)
-        );
-        navigate("/");
+      console.log(data);
+      toast.success("User created", toastOptions);
+      
+      if (!data) {
+        toast.error("Failed to create user", toastOptions);
       }
+      setTimeout(() => {
+        if (data) {
+          localStorage.setItem("userInfo", JSON.stringify(data));
+          
+          navigate("/");
+          
+        }
+        
+    }, 1200);
+      
+    }
+    catch (error) {
+      console.error("Error occurred:", error);
+      toast.error(error.response.data.message, toastOptions);
+    }
+    setPicLoading(false);
+    }
+  };
+
+  const handlePictureChange = (pics) => {
+    setPicLoading(true);
+    if (pics === undefined) {
+      toast.warning(
+        "Please Select an Image!",
+        toastOptions
+      );
+      return;
+    }
+    console.log(pics);
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "Chat-App");
+      data.append("cloud_name", "do3xjl1xo");
+      fetch("https://api.cloudinary.com/v1_1/do3xjl1xo/image/upload", {
+        method: "post",
+        body: data,
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setValues({
+            ...values, 
+            pic: data.url.toString(), 
+          });
+          
+          console.log(data.url.toString());
+          setPicLoading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setPicLoading(false);
+        });
+    } else {
+
+      toast.error("Please Select an Image!", toastOptions);
+        
+      setPicLoading(false);
+      return;
     }
   };
   return (
@@ -123,9 +198,9 @@ const handleChange = (event) => {
             margin="normal"
             required
             fullWidth
-            id="username"
-            label="Username"
-            name="username"
+            id="name"
+            label="name"
+            name="name"
             placeholder="Username"
             onChange={(e) => handleChange(e)}
             InputLabelProps={{ shrink: true }}
@@ -142,8 +217,9 @@ const handleChange = (event) => {
             required
             fullWidth
             id="email"
-            label="Email"
+            label="email"
             name="email"
+            type="email"
             placeholder="Email"
             onChange={(e) => handleChange(e)}
             InputLabelProps={{ shrink: true }}
@@ -191,12 +267,23 @@ const handleChange = (event) => {
               },
             }}
           />
-
+          <div style={{width:'100%', display:"flex", justifyContent:'center',alignContent:'center', color:'white'}}>
+            <Input
+            style={{padding:5, color:"White", fontSize:'20px'}}
+              type="file"
+              id="pic"
+              name="pic"
+              onChange={(e)=> handlePictureChange(e.target.files[0])}
+              />
+          </div>
           
-          <Button
+          <LoadingButton
             type="submit"
+            loading={picLoading}
+            loadingIndicator={<CircularProgress color="secondary" size={26} />}            
             fullWidth
             variant="contained"
+            lo
             sx={{
               marginTop: "1rem",
               backgroundColor: "#997af0",
@@ -212,7 +299,7 @@ const handleChange = (event) => {
             }}
           >
             Create User
-          </Button>
+          </LoadingButton>
 
           
           <Grid container justifyContent="center" sx={{ marginTop: "1rem" }}>
