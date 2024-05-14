@@ -5,7 +5,6 @@ import MyChats from "../components/MyChats";
 import SideDrawer from "../components/SideDrawer";
 import { ChatState } from "../Context/ChatProvider";
 import { Box } from "@mui/material";
-
 const Chat = () => {
   const [fetchAgain, setFetchAgain] = useState(false);
   const { user } = ChatState();
@@ -13,7 +12,7 @@ const Chat = () => {
   return (
     <div style={{ width: "100%" }}>
       {user && <SideDrawer />}
-      <Box display="flex" justifyContent="space-between" w="100%" h="91.5vh" p="10px">
+      <Box sx={{ display:"flex", alignItems:{xs:"center",md:"normal"}, justifyContent:{md:"space-between",xs:"center"}}} >
         {user && <MyChats fetchAgain={fetchAgain} />}
         {user && (
           <Chatbox fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} />

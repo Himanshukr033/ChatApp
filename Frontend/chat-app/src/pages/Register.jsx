@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import LoadingButton from '@mui/lab/LoadingButton';
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom"; 
 import { ToastContainer, toast } from "react-toastify";
+// import { Link } from "react-router-dom";
 import "react-toastify/dist/ReactToastify.css";
 // import { loginRoute } from "../utils/APIRoutes";
 import {
@@ -11,7 +12,7 @@ import {
     TextField,
     Box,
     Grid,
-    Link as MuiLink,
+    // Link as MuiLink,
     Input,
   } from "@mui/material";
 
@@ -55,7 +56,7 @@ const handleChange = (event) => {
         toastOptions
       );
       
-      return false;
+      return false; 
     } else if (name.length < 3) {
       toast.error(
         "Username should be greater than 3 characters.",
@@ -306,14 +307,12 @@ const handleChange = (event) => {
             <Grid item>
               <Typography variant="h6" sx={{ color: "white" }}>
                 Already have an account?{" "}
-                <MuiLink
-                  component={Link}
+                <Link
                   to="/login"
-                  variant="h5"
-                  sx={{ color: "#4e0eff", fontWeight: "bold" }}
+                  style={{ color: "#4e0eff", fontWeight: "bold", fontSize:20 }}
                 >
                   Login
-                </MuiLink>
+                </Link>
               </Typography>
             </Grid>
           </Grid>

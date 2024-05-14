@@ -10,7 +10,6 @@ import {
     Button,
     Box,
     Grid,
-    Link as MuiLink,
   } from "@mui/material";
 
 export default function Login() {
@@ -162,14 +161,13 @@ export default function Login() {
             <Grid item>
               <Typography variant="h6" sx={{ color: "white" }}>
                 Don&apos;t have an account?{" "}
-                <MuiLink
-                  component={Link}
+                <Link
                   to="/register"
-                  variant="h5"
-                  sx={{ color: "#4e0eff", fontWeight: "bold" }}
+                  // onClick={()=>{navigate("/register")}}
+                  style={{ color: "#4e0eff", fontWeight: "bold", fontSize:20 }}
                 >
                   Create One
-                </MuiLink>
+                </Link>
               </Typography>
             </Grid>
           </Grid>
