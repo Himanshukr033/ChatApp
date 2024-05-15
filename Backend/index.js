@@ -6,7 +6,6 @@ const userRoutes = require("./routes/userRoutes.js")
 const chatRoutes = require("./routes/chatRoutes.js")
 const messageRoutes = require("./routes/messageRoutes.js")
 const {notFound, errorHandler} = require("./middleware/errorMiddleware.js")
-const path = require("path");
 
 const app = express();
 
@@ -28,23 +27,7 @@ app.use('/api/message', messageRoutes)
 
 
 
-// // --------------------------deployment------------------------------
 
-// const __dirname1 = path.resolve();
-
-// if (process.env.NODE_ENV === "production") {
-//   app.use(express.static(path.join(__dirname1, "../Frontend/chat-app/dist")));
-
-//   app.get("*", (req, res) =>
-//     res.sendFile(path.resolve(__dirname1, "Frontend", "chat-app","dist", "index.html"))
-//   );
-// } else {
-//   app.get("/", (req, res) => {
-//     res.send("API is running..");
-//   });
-// }
-
-// // --------------------------deployment------------------------------
 
 
 
@@ -57,7 +40,7 @@ const server = app.listen(PORT, console.log(`server started on PORT ${PORT}`.yel
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
-      origin: "http://localhost:5173",
+      origin: "https://chat-app-033.netlify.app/",
       // credentials: true,
     },
   });
