@@ -30,7 +30,7 @@ export default function Login() {
     draggable: true,
     theme: "dark",
   };
-
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const handleChange = (event) => {
     setValues({ ...values, [event.target.name]: event.target.value });
   };
@@ -50,7 +50,7 @@ export default function Login() {
       const { email, password } = values;
       try {
         console.log("handlesubmit try entered");
-        const { data } = await axios.post('http://localhost:5030/api/user/login', { email, password });
+        const { data } = await axios.post(`${apiUrl}api/user/login`, { email, password });
         console.log(data);
         if (!data) {
           toast.error(data.message, toastOptions);

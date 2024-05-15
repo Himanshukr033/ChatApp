@@ -8,13 +8,13 @@ import { ToastContainer, toast } from "react-toastify";
 import CircularProgress from '@mui/material/CircularProgress';
 import ScrollableChat from "./ScrollableChat";
 import Lottie from "react-lottie";
-import animationData from "../animation/Typing.json";
+import animationData from "../animation/TypingAni.json";
 
 import io from "socket.io-client";
 import { ChatState } from "../Context/ChatProvider";
 import { FormControl, IconButton, Box , Input, Typography } from "@mui/material";
 
-const ENDPOINT = "http://localhost:5030";
+// const ENDPOINT = "http://localhost:5030";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -41,11 +41,13 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
+
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const { selectedChat, setSelectedChat, user, notification, setNotification } =
     ChatState();
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io(apiUrl);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
     socket.on("typing", () => setIsTyping(true));
@@ -67,7 +69,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       setLoading(true);
 
       const { data } = await axios.get(
-        `http://localhost:5030/api/message/${selectedChat._id}`,
+        `${apiUrl}api/message/${selectedChat._id}`,
         config
       );
       console.log(data);
@@ -94,7 +96,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "http://localhost:5030/api/message",
+          `${apiUrl}api/message`,
           {
             content: newMessage,
             chatId: selectedChat._id,
@@ -183,18 +185,12 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </>
               ) : (
                 <>
-                  {/* {selectedChat.chatName.toUpperCase()}
-                  <UpdateGroupChatModal
-                    fetchMessages={fetchMessages}
-                    fetchAgain={fetchAgain}
-                    setFetchAgain={setFetchAgain}
-                  /> */}
                 </>
               ))}
           </Typography>
           <Box
           sx={{ position:"relative",display:"flex", flexDirection:"column", justifyContent:"flex-start", alignItems:"flex-end",padding:3,
-          bgcolor:"#f8E8E8", width:{xs:"90vw",md:"67.5vw"}, height:"73vh", overflowY:"hidden", borderRadius:10}}
+          bgcolor:"#0a0a13", width:{xs:"90vw",md:"67.5vw"}, height:"73vh", overflowY:"hidden", borderRadius:10}}
             
           >
             {loading ? (
@@ -212,17 +208,17 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
             <FormControl
               onKeyDown={sendMessage}
               id="first-name"
-              isRequired
+              
               mt={3}
               sx={{width:"95%",position:"absolute", bottom:25, display:"flex"}}
             >
               {istyping ? (
-                <div>
-                  <Lottie
+                <div
+                  style={{ position:"absolute",bottom: 30,marginLeft: 0 }}
+                 > <Lottie
                     options={defaultOptions}
                     // height={50}
                     width={70}
-                    style={{ position:"absolute",bottom: 25, marginLeft: 0 }}
                   />
                 </div>
               ) : (
@@ -230,7 +226,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                 </div>
               )}
               <Input
-              sx={{width:"100%", bgcolor:"#E0E0E0", borderRadius:4, padding:"5px 15px"}}
+              sx={{width:"100%", bgcolor:"#b7b2d4", borderRadius:4, padding:"5px 15px"}}
                 variant="filled"
                 placeholder="Enter a message.."
                 value={newMessage}
@@ -240,7 +236,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </Box>
         </>
       ) : (
-        // to get socket.io on same page
+        
         <Box d="flex" alignItems="center" justifyContent="center" h="100%">
           <Typography fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start chatting

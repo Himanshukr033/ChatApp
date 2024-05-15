@@ -12,9 +12,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Logout from '@mui/icons-material/Logout';
 import { ToastContainer, toast } from "react-toastify";
-// import NotificationBadge from "react-notification-badge";
-// import { Effect } from "react-notification-badge";
-// import { getSender } from "../../config/ChatLogics";
+import NotificationBadge from "react-notification-badge";
+import { Effect } from "react-notification-badge";
 import { ChatState } from "../Context/ChatProvider";
 import ProfileModal from "./ProfileModal";
 import ChatLoading from "./ChatLoading";
@@ -39,6 +38,8 @@ function SideDrawer() {
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
 
   const {
     setSelectedChat,
@@ -106,7 +107,7 @@ function SideDrawer() {
         },
       };
 
-      const { data } = await axios.get(`http://localhost:5030/api/user?search=${search}`, config);
+      const { data } = await axios.get(`${apiUrl}api/user?search=${search}`, config);
       console.log(data);
       setSearchResult(data);
       setTimeout(() => {
@@ -132,7 +133,7 @@ function SideDrawer() {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.post(`http://localhost:5030/api/chat`, { userId }, config);
+      const { data } = await axios.post(`${apiUrl}api/chat`, { userId }, config);
       console.log(data);
       if (!chats.find((c) => c._id === data._id)) setChats([data, ...chats]);
       setSelectedChat(data);
@@ -178,9 +179,9 @@ function SideDrawer() {
             aria-haspopup="true"
             aria-expanded={openNoti ? 'true' : undefined}
             >
-              {/* <NotificationBadge count={notification.length} effect={Effect.SCALE} />
-              <NotificationsActiveIcon fontSize="large" margin="1" /> */}
-              <NotificationsActiveIcon/>
+              <NotificationsActiveIcon fontSize="large" margin="1" />
+              <NotificationBadge count={notification.length} effect={Effect.SCALE} />
+              
             </IconButton>
         </Tooltip>
             
@@ -223,10 +224,7 @@ function SideDrawer() {
                 setSelectedChat(notif.chat);
                 setNotification(notification.filter((n) => n !== notif));
               }}
-            >
-              {notif.chat.isGroupChat
-                ? `New Message in ${notif.chat.chatName}`
-                : `New Message from ${getSender(user, notif.chat.users)}`}
+            >   { `New Message from ${getSender(user, notif.chat.users)}`}
             </MenuItem>
           ))}
         </MenuItem> 

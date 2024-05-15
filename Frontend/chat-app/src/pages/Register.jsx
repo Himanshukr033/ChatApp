@@ -18,7 +18,7 @@ import {
 
   export default function Register() {
     const navigate = useNavigate();
-
+    const apiUrl = import.meta.env.VITE_API_BASE_URL;
     const toastOptions = {
       position: "bottom-right",
       autoClose: 8000,
@@ -89,7 +89,7 @@ const handleChange = (event) => {
       const { email, name, password,pic } = values;
       try {
         console.log("handlesubmit try entered");
-      const { data } = await axios.post("http://localhost:5030/api/user/register", {
+      const { data } = await axios.post(`${apiUrl}api/user/register`, {
         name,
         email,
         password,

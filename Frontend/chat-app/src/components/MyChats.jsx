@@ -3,14 +3,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { getSender } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
-import GroupChatModal from "./GroupChatModal";
 import { ChatState } from "../Context/ChatProvider";
 import { ToastContainer, toast } from "react-toastify";
 import { Stack, Box, Button,  Typography } from "@mui/material";
 
 
 const MyChats = ({ fetchAgain }) => {
-
+  const apiUrl = import.meta.env.VITE_API_BASE_URL;
   const toastOptions = {
     position: "bottom-right",
     autoClose: 8000,
@@ -35,7 +34,7 @@ const MyChats = ({ fetchAgain }) => {
         },
       };
 
-      const { data } = await axios.get("http://localhost:5030/api/chat", config);
+      const { data } = await axios.get(`${apiUrl}api/chat`, config);
       
       setChats(data);
     } catch (error) {
@@ -84,15 +83,7 @@ const MyChats = ({ fetchAgain }) => {
       }}
       >
         My Chats
-        {/* <GroupChatModal>
-          <Button
-            d="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-          >
-            New Group Chat
-          </Button>
-        </GroupChatModal> */}
+        
       </Box>
       <Box
       sx={{
@@ -105,17 +96,13 @@ const MyChats = ({ fetchAgain }) => {
       }}
       >
         {chats ? (
-          <Stack overflowY="scroll">
+          <Stack sx={{overflowY:"scroll"}} >
             {chats.map((chat) => (
               <Box
-              sx={{backgroundColor:selectedChat === chat ? "#38B2AC" : "#E8E8E8"}}
+              sx={{backgroundColor:selectedChat === chat ? "#2596be" : "#3e3c51", cursor:"pointer", color:"white", m:1,borderRadius:5}}
                 onClick={() => setSelectedChat(chat)}
-                cursor="pointer"                
-                color={selectedChat === chat ? "white" : "black"}
                 px={3}
                 py={2}
-                m={1}
-                borderRadius={5}
                 key={chat._id}
               >
                 <Typography>
