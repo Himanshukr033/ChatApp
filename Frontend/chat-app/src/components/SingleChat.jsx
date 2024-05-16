@@ -169,7 +169,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
            fontFamily:"work sans", display:"flex", justifyContent:{xs:"space-between"}, alignItems:"center"}}
           >
             <IconButton
-              display={{ xs: "flex", md: "none" }}
+            color="primary"
+              display={{ xs: "flex", md: "none",  }}
               
               onClick={() => setSelectedChat("")}
               >

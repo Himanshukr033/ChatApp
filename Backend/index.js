@@ -6,8 +6,10 @@ const userRoutes = require("./routes/userRoutes.js")
 const chatRoutes = require("./routes/chatRoutes.js")
 const messageRoutes = require("./routes/messageRoutes.js")
 const {notFound, errorHandler} = require("./middleware/errorMiddleware.js")
-
+const https = require("https");
+const fs = require("fs");
 const app = express();
+
 
 // const socket = require("socket.io");
 require("dotenv").config();
@@ -34,13 +36,18 @@ app.use('/api/message', messageRoutes)
 app.use(notFound);
 app.use(errorHandler);
 
-const server = app.listen(PORT, console.log(`server started on PORT ${PORT}`.yellow.bold));
 
+const options = {
+  key: fs.readFileSync('/path/to/your/private-key.pem'),
+  cert: fs.readFileSync('/path/to/your/certificate.pem'),
+};
+
+const server = https.createServer(options, app);
 
 const io = require("socket.io")(server, {
     pingTimeout: 60000,
     cors: {
-      origin: "https://chat-app-033.netlify.app/",
+      origin: "https://chat-app-033.netlify.app",
       // credentials: true,
     },
   });
@@ -76,3 +83,7 @@ const io = require("socket.io")(server, {
       socket.leave(userData._id);
     });
   });
+
+  server.listen(PORT, () => {
+    console.log(`Server started on PORT ${PORT}`);
+});
