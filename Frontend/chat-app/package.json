@@ -2,13 +2,40 @@
   "name": "chat-app",
   "private": true,
   "version": "0.0.0",
+  "author": "Himanshu Kumar",
+  "description": "This application is made using react, vite and elctronjs for chatting ",
+  "main": "./public/Main.cjs",
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "start": "concurrently \"npm run dev\" \"npm run start-electron\"",
+    "start-electron": "electron ./public/Main.cjs",
+    "build": "vite build && npm run build-electron",
+    "build-electron": "electron-builder",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview"
   },
+
+  "build": {
+    "appId": "app.netlify.myChatApp",
+    "files": [
+      "dist/**/*",
+      "./public/Main.cjs"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "mac": {
+      "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
+    },
+    "linux": {
+      "target": "AppImage"
+    }
+  },
+
   "dependencies": {
     "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.5",
@@ -16,7 +43,9 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.17",
     "axios": "^1.6.8",
+    "cors": "^2.8.5",
     "dotenv": "^16.4.5",
+    "express": "^4.19.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-lottie": "^1.2.4",
@@ -24,12 +53,17 @@
     "react-router-dom": "^6.23.0",
     "react-scrollable-feed": "^2.0.2",
     "react-toastify": "^10.0.5",
-    "socket.io-client": "^4.7.5"
+    "socket.io-client": "^4.7.5",
+    "wait-on": "^7.2.0"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",
     "@vitejs/plugin-react-swc": "^3.5.0",
+    "concurrently": "^8.2.2",
+    "cross-env": "^7.0.3",
+    "electron": "^30.0.6",
+    "electron-builder": "^24.13.3",
     "eslint": "^8.57.0",
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
